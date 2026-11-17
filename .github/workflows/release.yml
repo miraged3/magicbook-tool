@@ -1,0 +1,63 @@
+name: Release Windows app
+
+on:
+  push:
+    tags: ['v[0-9]*']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+
+jobs:
+  package:
+    runs-on: windows-2025
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Restore dependencies
+        shell: powershell
+        run: .\launcher\setup-web.ps1
+      - name: Build desktop app
+        shell: powershell
+        run: .\launcher\build.ps1
+      - name: Package ZIP and checksum
+        shell: powershell
+        run: .\launcher\package-release.ps1 -Tag $env:GITHUB_REF_NAME
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-assets
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 7
+
+  publish:
+    needs: package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: release-assets
+          path: assets
+      - name: Publish GitHub Release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          name="HonorHardwareManager-${GITHUB_REF_NAME}-windows-x64.zip"
+          (
+            cd assets
+            sha256sum --check "$name.sha256"
+          )
+          gh release create "$GITHUB_REF_NAME" "assets/$name" "assets/$name.sha256" \
+            --repo "$GITHUB_REPOSITORY" --verify-tag --generate-notes

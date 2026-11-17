@@ -1,0 +1,27 @@
+# Local-only material
+/.local/
+/driver/
+/re_work/
+/github-release/
+
+# Build outputs and downloaded dependencies
+/web/node_modules/
+/web/webview2/
+/web/webview2.zip
+/web-dist/
+/artifacts/
+*.exe
+*.dll
+*.pdb
+*.sys
+*.cat
+*.nupkg
+
+# Local logs, configuration, and IDE state
+*.log
+.env
+.env.*
+.npmrc
+.vs/
+.vscode/
+Thumbs.db

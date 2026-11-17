@@ -1,0 +1,29 @@
+name: Build Windows app
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-2025
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - name: Restore dependencies
+        shell: powershell
+        run: .\launcher\setup-web.ps1
+      - name: Build desktop app
+        shell: powershell
+        run: .\launcher\build.ps1
