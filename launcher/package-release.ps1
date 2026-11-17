@@ -40,8 +40,11 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Could not read npm lockfile.' }
 } finally { Pop-Location }
 
-# Include Tailwind's license and tslib, which npm also marks as a build dependency.
-$sharedPackages = @('node_modules/tailwindcss', 'node_modules/tslib')
+# Include Tailwind's license and tslib when npm installs a root copy.
+$sharedPackages = @('node_modules/tailwindcss')
+if (Test-Path -LiteralPath (Join-Path $web 'node_modules/tslib') -PathType Container) {
+    $sharedPackages += 'node_modules/tslib'
+}
 foreach ($package in ($runtimePackages + $sharedPackages | Sort-Object -Unique)) {
     if ($package -notmatch '^node_modules/(?:@[^/]+/)?[^/]+(?:/node_modules/(?:@[^/]+/)?[^/]+)*$' -or $package -match '[\\:]|(^|/)\.\.(/|$)') {
         throw "Unexpected package path in lockfile: $package"

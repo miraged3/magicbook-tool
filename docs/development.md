@@ -1,6 +1,6 @@
 # 从源码构建
 
-需要 Windows x64、Windows PowerShell 5.1 和 Node.js 24（含 npm）。在仓库根目录运行：
+需要 Windows x64、Windows PowerShell 5.1，以及 [`.node-version`](../.node-version) 中指定的 Node.js 版本（使用随附的 npm）。在仓库根目录运行：
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\launcher\setup-web.ps1
