@@ -27,3 +27,12 @@ jobs:
       - name: Build desktop app
         shell: powershell
         run: .\launcher\build.ps1
+      - name: Package ZIP and checksum
+        shell: powershell
+        run: .\launcher\package-release.ps1
+      - uses: actions/upload-artifact@v4
+        with:
+          name: MagicBook-Tool-Windows-x64
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 7
