@@ -30,7 +30,7 @@ jobs:
       - name: Package ZIP and checksum
         shell: powershell
         run: .\launcher\package-release.ps1
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: MagicBook-Tool-Windows-x64
           path: artifacts/
