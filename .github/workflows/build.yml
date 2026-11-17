@@ -30,9 +30,17 @@ jobs:
       - name: Package ZIP and checksum
         shell: powershell
         run: .\launcher\package-release.ps1
-      - uses: actions/upload-artifact@v7
+      - name: Upload Windows ZIP
+        uses: actions/upload-artifact@v7
         with:
-          name: MagicBook-Tool-Windows-x64
-          path: artifacts/
+          path: artifacts/HonorHardwareManager-*-windows-x64.zip
+          archive: false
+          if-no-files-found: error
+          retention-days: 7
+      - name: Upload SHA-256 checksum
+        uses: actions/upload-artifact@v7
+        with:
+          path: artifacts/HonorHardwareManager-*-windows-x64.zip.sha256
+          archive: false
           if-no-files-found: error
           retention-days: 7
